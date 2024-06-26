@@ -1,0 +1,34 @@
+<form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+    <nz-form-item>
+      <nz-form-label [nzSpan]="6">Email</nz-form-label>
+      <nz-form-control [nzSpan]="14" [nzValidateStatus]="loginForm.get('email')!">
+        <input nz-input formControlName="email" type="email" required>
+        <div nz-form-explain *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched">
+          Please enter a valid email
+        </div>
+      </nz-form-control>
+    </nz-form-item>
+  
+    <nz-form-item>
+      <nz-form-label [nzSpan]="6">Password</nz-form-label>
+      <nz-form-control [nzSpan]="14" [nzValidateStatus]="loginForm.get('password')!">
+        <input nz-input formControlName="password" type="password" required minlength="6">
+        <div nz-form-explain *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched">
+          Password must be at least 6 characters
+        </div>
+      </nz-form-control>
+    </nz-form-item>
+  
+    <nz-form-item>
+      <nz-form-control [nzSpan]="14" nzOffset="6">
+        <label nz-checkbox formControlName="remember">Remember me</label>
+      </nz-form-control>
+    </nz-form-item>
+  
+    <nz-form-item>
+      <nz-form-control [nzSpan]="14" nzOffset="6">
+        <button nz-button nzType="primary" type="submit">Login</button>
+      </nz-form-control>
+    </nz-form-item>
+  </form>
+  

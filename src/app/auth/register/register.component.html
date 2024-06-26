@@ -1,0 +1,58 @@
+<form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+    <nz-form-item>
+      <nz-form-label [nzSpan]="6">Email</nz-form-label>
+      <nz-form-control [nzSpan]="14" [nzValidateStatus]="registerForm.get('email')!">
+        <input nz-input formControlName="email" type="email" required>
+        <div nz-form-explain *ngIf="registerForm.get('email')?.invalid && registerForm.get('email')?.touched">
+          Please enter a valid email
+        </div>
+      </nz-form-control>
+    </nz-form-item>
+  
+    <nz-form-item>
+      <nz-form-label [nzSpan]="6">Password</nz-form-label>
+      <nz-form-control [nzSpan]="14" [nzValidateStatus]="registerForm.get('password')!">
+        <input nz-input formControlName="password" type="password" required minlength="6">
+        <div nz-form-explain *ngIf="registerForm.get('password')?.invalid && registerForm.get('password')?.touched">
+          Password must be at least 6 characters
+        </div>
+      </nz-form-control>
+    </nz-form-item>
+  
+    <nz-form-item>
+      <nz-form-label [nzSpan]="6">Confirm Password</nz-form-label>
+      <nz-form-control [nzSpan]="14" [nzValidateStatus]="registerForm.get('confirmPassword')!">
+        <input nz-input formControlName="confirmPassword" type="password" required minlength="6">
+        <div nz-form-explain *ngIf="registerForm.get('confirmPassword')?.invalid && registerForm.get('confirmPassword')?.touched">
+          Password must be at least 6 characters
+        </div>
+      </nz-form-control>
+    </nz-form-item>
+  
+    <nz-form-item>
+      <nz-form-label [nzSpan]="6">First Name</nz-form-label>
+      <nz-form-control [nzSpan]="14" [nzValidateStatus]="registerForm.get('firstName')!">
+        <input nz-input formControlName="firstName" type="text" required>
+        <div nz-form-explain *ngIf="registerForm.get('firstName')?.invalid && registerForm.get('firstName')?.touched">
+          Please enter your first name
+        </div>
+      </nz-form-control>
+    </nz-form-item>
+  
+    <nz-form-item>
+      <nz-form-label [nzSpan]="6">Last Name</nz-form-label>
+      <nz-form-control [nzSpan]="14" [nzValidateStatus]="registerForm.get('lastName')!">
+        <input nz-input formControlName="lastName" type="text" required>
+        <div nz-form-explain *ngIf="registerForm.get('lastName')?.invalid && registerForm.get('lastName')?.touched">
+          Please enter your last name
+        </div>
+      </nz-form-control>
+    </nz-form-item>
+  
+    <nz-form-item>
+      <nz-form-control [nzSpan]="14" nzOffset="6">
+        <button nz-button nzType="primary" type="submit">Register</button>
+      </nz-form-control>
+    </nz-form-item>
+  </form>
+  

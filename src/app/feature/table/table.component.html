@@ -1,0 +1,68 @@
+<h2>Friends List</h2>
+
+<form (ngSubmit)="addFriend()" *ngIf="!newFriend.id">
+  <label for="firstName">First Name:</label>
+  <input type="text" id="firstName" [(ngModel)]="newFriend.firstName" name="firstName" required>
+
+  <label for="lastName">Last Name:</label>
+  <input type="text" id="lastName" [(ngModel)]="newFriend.lastName" name="lastName" required>
+
+  <label for="phone">Phone:</label>
+  <input type="text" id="phone" [(ngModel)]="newFriend.phone" name="phone" required>
+
+  <label for="city">City:</label>
+  <input type="text" id="city" [(ngModel)]="newFriend.city" name="city" required>
+
+  <label for="birthday">Birthday:</label>
+  <input type="date" id="birthday" [(ngModel)]="newFriend.birthday" name="birthday" required>
+
+  <button type="submit">Add Friend</button>
+</form>
+
+<form (ngSubmit)="addFriend()" *ngIf="newFriend.id">
+  <label for="firstName">First Name:</label>
+  <input type="text" id="firstName" [(ngModel)]="newFriend.firstName" name="firstName" required>
+
+  <label for="lastName">Last Name:</label>
+  <input type="text" id="lastName" [(ngModel)]="newFriend.lastName" name="lastName" required>
+
+  <label for="phone">Phone:</label>
+  <input type="text" id="phone" [(ngModel)]="newFriend.phone" name="phone" required>
+
+  <label for="city">City:</label>
+  <input type="text" id="city" [(ngModel)]="newFriend.city" name="city" required>
+
+  <label for="birthday">Birthday:</label>
+  <input type="date" id="birthday" [(ngModel)]="newFriend.birthday" name="birthday" required>
+
+  <button type="submit">Save Changes</button>
+</form>
+
+<label for="search">Search:</label>
+<input type="text" id="search" [(ngModel)]="searchTerm" name="searchTerm">
+
+<table>
+  <thead>
+    <tr>
+      <th (click)="sortFriends('firstName')">First Name</th>
+      <th (click)="sortFriends('lastName')">Last Name</th>
+      <th (click)="sortFriends('phone')">Phone</th>
+      <th (click)="sortFriends('city')">City</th>
+      <th (click)="sortFriends('birthday')">Birthday</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let friend of searchFriends()">
+      <td (click)="openDetails(friend)">{{ friend.firstName }}</td>
+      <td (click)="openDetails(friend)">{{ friend.lastName }}</td>
+      <td (click)="openDetails(friend)">{{ friend.phone }}</td>
+      <td (click)="openDetails(friend)">{{ friend.city }}</td>
+      <td (click)="openDetails(friend)">{{ friend.birthday }}</td>
+      <td>
+        <button (click)="editFriend(friend)">Edit</button>
+        <button (click)="deleteFriend(friend.id)">Delete</button>
+      </td>
+    </tr>
+  </tbody>
+</table>
