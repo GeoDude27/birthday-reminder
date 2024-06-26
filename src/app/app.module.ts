@@ -15,6 +15,8 @@ import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzTableModule } from 'ng-zorro-antd/table';
 import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
+import { NzNotificationModule } from 'ng-zorro-antd/notification';
+import { NzModalModule } from 'ng-zorro-antd/modal';
 
 import { AuthService } from './shared/auth.service';
 import { AuthGuard } from './shared/auth.guard';
@@ -37,7 +39,9 @@ registerLocaleData(en);
     NzInputModule,
     NzFormModule,
     NzTableModule,
-    NzCheckboxModule
+    NzCheckboxModule,
+    NzNotificationModule,
+    NzModalModule
   ],
   providers: [{ provide: NZ_I18N, useValue: en_US }, AuthService, AuthGuard],
   bootstrap: [AppComponent]

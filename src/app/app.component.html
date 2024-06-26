@@ -1,9 +1,15 @@
-<nav>
-  <ul>
+<header>
+  Birthday Reminder
+</header>
+<nav nz-menu nzTheme="dark" nzMode="horizontal">
+  <ul nz-menu-item>
     <li><a routerLink="/login">Login</a></li>
     <li><a routerLink="/register">Register</a></li>
-    <li><a routerLink="/table">Table</a></li>
+    <li *ngIf="authService.isAuthenticated()"><a routerLink="/table">Table</a></li>
     <li *ngIf="authService.isAuthenticated()"><a (click)="logout()">Logout</a></li>
   </ul>
 </nav>
 <router-outlet></router-outlet>
+<footer>
+  &copy; 2024 Birthday Reminder
+</footer>

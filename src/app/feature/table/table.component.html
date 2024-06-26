@@ -1,68 +1,92 @@
-<h2>Friends List</h2>
-
-<form (ngSubmit)="addFriend()" *ngIf="!newFriend.id">
-  <label for="firstName">First Name:</label>
-  <input type="text" id="firstName" [(ngModel)]="newFriend.firstName" name="firstName" required>
-
-  <label for="lastName">Last Name:</label>
-  <input type="text" id="lastName" [(ngModel)]="newFriend.lastName" name="lastName" required>
-
-  <label for="phone">Phone:</label>
-  <input type="text" id="phone" [(ngModel)]="newFriend.phone" name="phone" required>
-
-  <label for="city">City:</label>
-  <input type="text" id="city" [(ngModel)]="newFriend.city" name="city" required>
-
-  <label for="birthday">Birthday:</label>
-  <input type="date" id="birthday" [(ngModel)]="newFriend.birthday" name="birthday" required>
-
-  <button type="submit">Add Friend</button>
-</form>
-
-<form (ngSubmit)="addFriend()" *ngIf="newFriend.id">
-  <label for="firstName">First Name:</label>
-  <input type="text" id="firstName" [(ngModel)]="newFriend.firstName" name="firstName" required>
-
-  <label for="lastName">Last Name:</label>
-  <input type="text" id="lastName" [(ngModel)]="newFriend.lastName" name="lastName" required>
-
-  <label for="phone">Phone:</label>
-  <input type="text" id="phone" [(ngModel)]="newFriend.phone" name="phone" required>
-
-  <label for="city">City:</label>
-  <input type="text" id="city" [(ngModel)]="newFriend.city" name="city" required>
-
-  <label for="birthday">Birthday:</label>
-  <input type="date" id="birthday" [(ngModel)]="newFriend.birthday" name="birthday" required>
-
-  <button type="submit">Save Changes</button>
-</form>
-
-<label for="search">Search:</label>
-<input type="text" id="search" [(ngModel)]="searchTerm" name="searchTerm">
-
-<table>
-  <thead>
-    <tr>
-      <th (click)="sortFriends('firstName')">First Name</th>
-      <th (click)="sortFriends('lastName')">Last Name</th>
-      <th (click)="sortFriends('phone')">Phone</th>
-      <th (click)="sortFriends('city')">City</th>
-      <th (click)="sortFriends('birthday')">Birthday</th>
-      <th>Actions</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr *ngFor="let friend of searchFriends()">
-      <td (click)="openDetails(friend)">{{ friend.firstName }}</td>
-      <td (click)="openDetails(friend)">{{ friend.lastName }}</td>
-      <td (click)="openDetails(friend)">{{ friend.phone }}</td>
-      <td (click)="openDetails(friend)">{{ friend.city }}</td>
-      <td (click)="openDetails(friend)">{{ friend.birthday }}</td>
-      <td>
-        <button (click)="editFriend(friend)">Edit</button>
-        <button (click)="deleteFriend(friend.id)">Delete</button>
-      </td>
-    </tr>
-  </tbody>
-</table>
+<div class="container">
+    <div class="card">
+      <input nz-input placeholder="Search..." [(ngModel)]="searchTerm" style="margin-bottom: 20px;">
+      <form [formGroup]="friendForm" (ngSubmit)="onSubmit()">
+        <nz-form-item>
+          <nz-form-label [nzSpan]="6">Nume</nz-form-label>
+          <nz-form-control [nzSpan]="14" [nzValidateStatus]="friendForm.get('nume')!">
+            <input nz-input formControlName="nume" type="text" required>
+            <div nz-form-explain *ngIf="friendForm.get('nume')?.invalid && friendForm.get('nume')?.touched">
+              Please enter a valid name
+            </div>
+          </nz-form-control>
+        </nz-form-item>
+  
+        <nz-form-item>
+          <nz-form-label [nzSpan]="6">Prenume</nz-form-label>
+          <nz-form-control [nzSpan]="14" [nzValidateStatus]="friendForm.get('prenume')!">
+            <input nz-input formControlName="prenume" type="text" required>
+            <div nz-form-explain *ngIf="friendForm.get('prenume')?.invalid && friendForm.get('prenume')?.touched">
+              Please enter a valid surname
+            </div>
+          </nz-form-control>
+        </nz-form-item>
+  
+        <nz-form-item>
+          <nz-form-label [nzSpan]="6">Telefon</nz-form-label>
+          <nz-form-control [nzSpan]="14" [nzValidateStatus]="friendForm.get('telefon')!">
+            <input nz-input formControlName="telefon" type="text" required>
+            <div nz-form-explain *ngIf="friendForm.get('telefon')?.invalid && friendForm.get('telefon')?.touched">
+              Please enter a valid phone number
+            </div>
+          </nz-form-control>
+        </nz-form-item>
+  
+        <nz-form-item>
+          <nz-form-label [nzSpan]="6">Oraș</nz-form-label>
+          <nz-form-control [nzSpan]="14" [nzValidateStatus]="friendForm.get('oras')!">
+            <input nz-input formControlName="oras" type="text" required>
+            <div nz-form-explain *ngIf="friendForm.get('oras')?.invalid && friendForm.get('oras')?.touched">
+              Please enter a valid city
+            </div>
+          </nz-form-control>
+        </nz-form-item>
+  
+        <nz-form-item>
+          <nz-form-label [nzSpan]="6">Data Nașterii</nz-form-label>
+          <nz-form-control [nzSpan]="14" [nzValidateStatus]="friendForm.get('dataNasterii')!">
+            <input nz-input formControlName="dataNasterii" type="date" required>
+            <div nz-form-explain *ngIf="friendForm.get('dataNasterii')?.invalid && friendForm.get('dataNasterii')?.touched">
+              Please enter a valid birth date
+            </div>
+          </nz-form-control>
+        </nz-form-item>
+  
+        <nz-form-item>
+          <nz-form-control [nzSpan]="14" nzOffset="6">
+            <button nz-button nzType="primary" type="submit">Submit</button>
+          </nz-form-control>
+        </nz-form-item>
+      </form>
+    </div>
+  
+    <div class="card">
+      <nz-table #basicTable [nzData]="filterFriends()" [nzBordered]="true">
+        <thead>
+          <tr>
+            <th nzWidth="15%">Nume</th>
+            <th nzWidth="15%">Prenume</th>
+            <th nzWidth="15%">Telefon</th>
+            <th nzWidth="15%">Oraș</th>
+            <th nzWidth="20%">Data Nașterii</th>
+            <th nzWidth="20%">Acțiuni</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let data of basicTable.data">
+            <td>{{ data.nume }}</td>
+            <td>{{ data.prenume }}</td>
+            <td>{{ data.telefon }}</td>
+            <td>{{ data.oras }}</td>
+            <td>{{ data.dataNasterii | date }}</td>
+            <td>
+              <button nz-button nzType="link" (click)="editFriend(data)">Editează</button>
+              <button nz-button nzType="link" (click)="deleteFriend(data)">Șterge</button>
+              <button nz-button nzType="link" (click)="viewFriend(data)">Vezi</button>
+            </td>
+          </tr>
+        </tbody>
+      </nz-table>
+    </div>
+  </div>
+  

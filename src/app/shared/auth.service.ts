@@ -1,16 +1,11 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 
-interface User {
-  email: string;
-  password: string;
-}
-
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  private users: User[] = [{ email: 'test@example.com', password: 'password123' }];
+  private users: { email: string, password: string }[] = [{ email: 'test@example.com', password: 'password123' }];
 
   constructor(private router: Router) {}
 

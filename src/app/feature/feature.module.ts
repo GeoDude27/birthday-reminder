@@ -1,11 +1,14 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { TableComponent } from './table/table.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms'; // Import FormsModule
 import { NzTableModule } from 'ng-zorro-antd/table';
-import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzInputModule } from 'ng-zorro-antd/input';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzIconModule } from 'ng-zorro-antd/icon';
+import { NzNotificationModule } from 'ng-zorro-antd/notification';
+import { NzModalModule } from 'ng-zorro-antd/modal';
+import { TableComponent } from './table/table.component';
 
 @NgModule({
   declarations: [
@@ -13,11 +16,15 @@ import { NzInputModule } from 'ng-zorro-antd/input';
   ],
   imports: [
     CommonModule,
-    FormsModule,
+    FormsModule, // Add FormsModule
+    ReactiveFormsModule,
     NzTableModule,
-    NzButtonModule,
     NzFormModule,
-    NzInputModule
+    NzInputModule,
+    NzButtonModule,
+    NzIconModule,
+    NzNotificationModule,
+    NzModalModule
   ]
 })
 export class FeatureModule { }

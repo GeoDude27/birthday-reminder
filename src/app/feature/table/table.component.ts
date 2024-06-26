@@ -1,5 +1,16 @@
 import { Component, OnInit } from '@angular/core';
-import { DataService } from 'src/app/shared/data.service';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { NzModalService } from 'ng-zorro-antd/modal';
+import { NotificationService } from '../../shared/notification.service';
+
+interface Friend {
+  id: number;
+  nume: string;
+  prenume: string;
+  telefon: string;
+  oras: string;
+  dataNasterii: Date;
+}
 
 @Component({
   selector: 'app-table',
@@ -7,56 +18,97 @@ import { DataService } from 'src/app/shared/data.service';
   styleUrls: ['./table.component.css']
 })
 export class TableComponent implements OnInit {
-  friends: any[] = [];
-  newFriend: any = {};
+  listOfData: Friend[] = [];
+  friendForm: FormGroup;
   searchTerm: string = '';
 
-  constructor(private dataService: DataService) {}
+  constructor(private fb: FormBuilder, private notification: NotificationService, private modal: NzModalService) {
+    this.friendForm = this.fb.group({
+      id: [null],
+      nume: ['', [Validators.required]],
+      prenume: ['', [Validators.required]],
+      telefon: ['', [Validators.required, Validators.pattern(/^[0-9]{10}$/)]],
+      oras: ['', [Validators.required]],
+      dataNasterii: ['', [Validators.required]]
+    });
+  }
 
   ngOnInit(): void {
-    this.loadFriends();
+    this.listOfData = [
+      {
+        id: 1,
+        nume: 'Popescu',
+        prenume: 'Ion',
+        telefon: '0712345678',
+        oras: 'Bucuresti',
+        dataNasterii: new Date('1990-01-01')
+      },
+      {
+        id: 2,
+        nume: 'Ionescu',
+        prenume: 'Maria',
+        telefon: '0712345679',
+        oras: 'Cluj-Napoca',
+        dataNasterii: new Date('1992-02-02')
+      }
+    ];
   }
 
-  loadFriends(): void {
-    this.friends = this.dataService.getFriends();
+  editFriend(friend: Friend): void {
+    this.friendForm.setValue({
+      id: friend.id,
+      nume: friend.nume,
+      prenume: friend.prenume,
+      telefon: friend.telefon,
+      oras: friend.oras,
+      dataNasterii: friend.dataNasterii
+    });
   }
 
-  addFriend(): void {
-    if (this.newFriend.id) {
-      // Update existing friend
-      this.dataService.updateFriend(this.newFriend.id, this.newFriend);
+  deleteFriend(friend: Friend): void {
+    this.listOfData = this.listOfData.filter(f => f.id !== friend.id);
+    this.notification.showSuccess('Friend deleted successfully!');
+  }
+
+  onSubmit(): void {
+    if (this.friendForm.valid) {
+      const formValue = this.friendForm.value;
+      if (formValue.id) {
+        const index = this.listOfData.findIndex(f => f.id === formValue.id);
+        this.listOfData[index] = { ...formValue, dataNasterii: new Date(formValue.dataNasterii) };
+        this.notification.showSuccess('Friend updated successfully!');
+      } else {
+        const newId = this.listOfData.length ? Math.max(...this.listOfData.map(f => f.id)) + 1 : 1;
+        this.listOfData = [...this.listOfData, { ...formValue, id: newId, dataNasterii: new Date(formValue.dataNasterii) }];
+        this.notification.showSuccess('Friend added successfully!');
+      }
+      this.friendForm.reset();
     } else {
-      // Add new friend
-      this.dataService.addFriend(this.newFriend);
+      this.notification.showError('Please fill in all required fields!');
     }
-    this.loadFriends();
-    this.newFriend = {};
   }
 
-  editFriend(friend: any): void {
-    this.newFriend = { ...friend }; // Preluăm datele prietenului pentru editare
+  viewFriend(friend: Friend): void {
+    this.modal.create({
+      nzTitle: 'Friend Details',
+      nzContent: `<p><strong>Name:</strong> ${friend.nume}</p>
+                  <p><strong>Surname:</strong> ${friend.prenume}</p>
+                  <p><strong>Phone:</strong> ${friend.telefon}</p>
+                  <p><strong>City:</strong> ${friend.oras}</p>
+                  <p><strong>Birth Date:</strong> ${new Date(friend.dataNasterii).toLocaleDateString()}</p>`,
+      nzFooter: null
+    });
   }
 
-  deleteFriend(id: number): void {
-    this.dataService.deleteFriend(id);
-    this.loadFriends();
-  }
-
-  sortFriends(column: string): void {
-    this.friends.sort((a, b) => a[column].localeCompare(b[column]));
-  }
-
-  searchFriends(): any[] {
-    return this.friends.filter(friend => 
-      friend.firstName.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-      friend.lastName.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-      friend.phone.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-      friend.city.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-      friend.birthday.toLowerCase().includes(this.searchTerm.toLowerCase())
+  filterFriends(): Friend[] {
+    if (!this.searchTerm) {
+      return this.listOfData;
+    }
+    return this.listOfData.filter(friend =>
+      friend.nume.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
+      friend.prenume.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
+      friend.telefon.includes(this.searchTerm) ||
+      friend.oras.toLowerCase().includes(this.searchTerm.toLowerCase())
     );
-  }
-
-  openDetails(friend: any): void {
-    alert(`Details:\nName: ${friend.firstName} ${friend.lastName}\nPhone: ${friend.phone}\nCity: ${friend.city}\nBirthday: ${friend.birthday}`);
   }
 }
