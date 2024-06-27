@@ -2,15 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { NotificationService } from '../../shared/notification.service';
-
-interface Friend {
-  id: number;
-  nume: string;
-  prenume: string;
-  telefon: string;
-  oras: string;
-  dataNasterii: Date;
-}
+import { FriendService, Friend } from '../../shared/friend.service';
 
 @Component({
   selector: 'app-table',
@@ -22,7 +14,12 @@ export class TableComponent implements OnInit {
   friendForm: FormGroup;
   searchTerm: string = '';
 
-  constructor(private fb: FormBuilder, private notification: NotificationService, private modal: NzModalService) {
+  constructor(
+    private fb: FormBuilder,
+    private notification: NotificationService,
+    private modal: NzModalService,
+    private friendService: FriendService
+  ) {
     this.friendForm = this.fb.group({
       id: [null],
       nume: ['', [Validators.required]],
@@ -34,24 +31,10 @@ export class TableComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.listOfData = [
-      {
-        id: 1,
-        nume: 'Popescu',
-        prenume: 'Ion',
-        telefon: '0712345678',
-        oras: 'Bucuresti',
-        dataNasterii: new Date('1990-01-01')
-      },
-      {
-        id: 2,
-        nume: 'Ionescu',
-        prenume: 'Maria',
-        telefon: '0712345679',
-        oras: 'Cluj-Napoca',
-        dataNasterii: new Date('1992-02-02')
-      }
-    ];
+    this.friendService.friends$.subscribe(friends => {
+      this.listOfData = friends;
+    });
+    this.friendService.getFriends();
   }
 
   editFriend(friend: Friend): void {
@@ -66,26 +49,45 @@ export class TableComponent implements OnInit {
   }
 
   deleteFriend(friend: Friend): void {
-    this.listOfData = this.listOfData.filter(f => f.id !== friend.id);
-    this.notification.showSuccess('Friend deleted successfully!');
+    this.friendService.deleteFriend(friend.id).subscribe(() => {
+      this.notification.showSuccess('Friend deleted successfully!');
+    }, error => {
+      this.notification.showError('Error deleting friend');
+    });
   }
 
   onSubmit(): void {
     if (this.friendForm.valid) {
       const formValue = this.friendForm.value;
       if (formValue.id) {
-        const index = this.listOfData.findIndex(f => f.id === formValue.id);
-        this.listOfData[index] = { ...formValue, dataNasterii: new Date(formValue.dataNasterii) };
-        this.notification.showSuccess('Friend updated successfully!');
+        this.friendService.updateFriend(formValue).subscribe(() => {
+          this.notification.showSuccess('Friend updated successfully!');
+          this.resetForm(); // Resetăm formularul după actualizare
+        }, error => {
+          this.notification.showError('Error updating friend');
+        });
       } else {
-        const newId = this.listOfData.length ? Math.max(...this.listOfData.map(f => f.id)) + 1 : 1;
-        this.listOfData = [...this.listOfData, { ...formValue, id: newId, dataNasterii: new Date(formValue.dataNasterii) }];
-        this.notification.showSuccess('Friend added successfully!');
+        this.friendService.addFriend(formValue).subscribe(() => {
+          this.notification.showSuccess('Friend added successfully!');
+          this.resetForm(); // Resetăm formularul după adăugare
+        }, error => {
+          this.notification.showError('Error adding friend');
+        });
       }
-      this.friendForm.reset();
     } else {
       this.notification.showError('Please fill in all required fields!');
     }
+  }
+
+  resetForm(): void {
+    this.friendForm.reset({
+      id: null,
+      nume: '',
+      prenume: '',
+      telefon: '',
+      oras: '',
+      dataNasterii: ''
+    });
   }
 
   viewFriend(friend: Friend): void {
