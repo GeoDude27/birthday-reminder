@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { AuthService } from '../../shared/auth.service';
+import { NotificationService } from '../../shared/notification.service';
 
 @Component({
   selector: 'app-login',
@@ -11,26 +12,33 @@ import { AuthService } from '../../shared/auth.service';
 export class LoginComponent {
   loginForm: FormGroup;
 
-  constructor(private router: Router, private fb: FormBuilder, private authService: AuthService) {
+  constructor(
+    private fb: FormBuilder,
+    private authService: AuthService,
+    private router: Router,
+    private notification: NotificationService
+  ) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(6)]],
-      remember: [false]
+      password: ['', [Validators.required]]
     });
   }
 
   onSubmit(): void {
     if (this.loginForm.valid) {
       const { email, password } = this.loginForm.value;
-      console.log(`Login form values: email=${email}, password=${password}`);
-      if (this.authService.login(email, password)) {
-        console.log('Navigation to /table');
-        this.router.navigate(['/table']);
-      } else {
-        alert('Invalid email or password');
-      }
+      this.authService.login(email, password).subscribe(
+        (response) => {
+          localStorage.setItem('authToken', response.token);
+          this.router.navigate(['/table']);
+          this.notification.showSuccess('Login successful');
+        },
+        (error) => {
+          this.notification.showError('Invalid email or password');
+        }
+      );
     } else {
-      alert('Invalid login');
+      this.notification.showError('Please fill in all required fields');
     }
   }
 }

@@ -1,29 +1,22 @@
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  private users: { email: string, password: string }[] = [{ email: 'test@example.com', password: 'password123' }];
+  private apiUrl = 'http://localhost:3000/api';
 
-  constructor(private router: Router) {}
+  constructor(private http: HttpClient, private router: Router) {}
 
-  register(email: string, password: string): void {
-    this.users.push({ email, password });
-    console.log(`User registered: email=${email}`);
+  register(email: string, password: string): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/register`, { email, password });
   }
 
-  login(email: string, password: string): boolean {
-    console.log(`Attempting login with email: ${email}, password: ${password}`);
-    const user = this.users.find(user => user.email === email && user.password === password);
-    if (user) {
-      console.log('Login successful');
-      localStorage.setItem('authToken', 'my-secret-token');
-      return true;
-    }
-    console.log('Login failed');
-    return false;
+  login(email: string, password: string): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/login`, { email, password });
   }
 
   logout(): void {

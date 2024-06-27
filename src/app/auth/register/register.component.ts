@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { AuthService } from '../../shared/auth.service';
+import { NotificationService } from '../../shared/notification.service';
 
 @Component({
   selector: 'app-register',
@@ -11,28 +12,32 @@ import { AuthService } from '../../shared/auth.service';
 export class RegisterComponent {
   registerForm: FormGroup;
 
-  constructor(private router: Router, private fb: FormBuilder, private authService: AuthService) {
+  constructor(
+    private fb: FormBuilder,
+    private authService: AuthService,
+    private router: Router,
+    private notification: NotificationService
+  ) {
     this.registerForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(6)]],
-      confirmPassword: ['', [Validators.required, Validators.minLength(6)]],
-      firstName: ['', Validators.required],
-      lastName: ['', Validators.required]
+      password: ['', [Validators.required]]
     });
   }
 
   onSubmit(): void {
     if (this.registerForm.valid) {
-      const { email, password, confirmPassword } = this.registerForm.value;
-      if (password === confirmPassword) {
-        this.authService.register(email, password);
-        alert('Registration successful');
-        this.router.navigate(['/login']);
-      } else {
-        alert('Passwords do not match');
-      }
+      const { email, password } = this.registerForm.value;
+      this.authService.register(email, password).subscribe(
+        () => {
+          this.router.navigate(['/login']);
+          this.notification.showSuccess('Registration successful');
+        },
+        (error) => {
+          this.notification.showError('Registration failed');
+        }
+      );
     } else {
-      alert('Invalid registration form');
+      this.notification.showError('Please fill in all required fields');
     }
   }
 }

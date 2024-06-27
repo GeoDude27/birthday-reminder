@@ -1,34 +1,31 @@
-<form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-    <nz-form-item>
-      <nz-form-label [nzSpan]="6">Email</nz-form-label>
-      <nz-form-control [nzSpan]="14" [nzValidateStatus]="loginForm.get('email')!">
-        <input nz-input formControlName="email" type="email" required>
+<div class="login-container">
+  <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+    <div nz-form-item>
+      <div nz-form-label>
+        <label for="email">Email</label>
+      </div>
+      <div nz-form-control>
+        <input nz-input formControlName="email" id="email" type="email" />
         <div nz-form-explain *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched">
           Please enter a valid email
         </div>
-      </nz-form-control>
-    </nz-form-item>
-  
-    <nz-form-item>
-      <nz-form-label [nzSpan]="6">Password</nz-form-label>
-      <nz-form-control [nzSpan]="14" [nzValidateStatus]="loginForm.get('password')!">
-        <input nz-input formControlName="password" type="password" required minlength="6">
+      </div>
+    </div>
+    <div nz-form-item>
+      <div nz-form-label>
+        <label for="password">Password</label>
+      </div>
+      <div nz-form-control>
+        <input nz-input formControlName="password" id="password" type="password" />
         <div nz-form-explain *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched">
-          Password must be at least 6 characters
+          Please enter a valid password
         </div>
-      </nz-form-control>
-    </nz-form-item>
-  
-    <nz-form-item>
-      <nz-form-control [nzSpan]="14" nzOffset="6">
-        <label nz-checkbox formControlName="remember">Remember me</label>
-      </nz-form-control>
-    </nz-form-item>
-  
-    <nz-form-item>
-      <nz-form-control [nzSpan]="14" nzOffset="6">
+      </div>
+    </div>
+    <div nz-form-item>
+      <div nz-form-control nz-col nzOffset="6">
         <button nz-button nzType="primary" type="submit">Login</button>
-      </nz-form-control>
-    </nz-form-item>
+      </div>
+    </div>
   </form>
-  
+</div>
